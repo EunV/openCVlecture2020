@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from ImageMerger import *
 
 
 class TextImg:
@@ -92,7 +91,7 @@ class TextImg:
         # for Cargo Image
         # 네모칸이 왼쪽 아래에서 오른쪽 위로 상승
         # edges (top,bottom,left,right) = (0,1,6,6)
-        # theta가 음수 일대 np.tan(theta)
+        # theta 가 음수 일대 np.tan(theta)
         # dstPoint = np.float32([
         #     [0 + self.originalHeight * np.tan(np.pi / 2 + (-1.5009831572559218)),  # 여기는 쓸게 없어서 갖다 부인거니 의미는 없음
         #      0],
@@ -131,12 +130,9 @@ class TextImg:
         dstPoint = np.float32([
             [0 + self.originalHeight * np.tan(np.pi / 2 + self.leftLineAngle),
              0],  # 좌상단
-
             [0, self.originalHeight],  # 좌하단. 기준점
-
             [self.originalWidth + self.originalHeight * np.tan(np.pi / 2 + self.rightLineAngle),
              self.originalWidth * np.tan(self.topLineAngle)],
-
             [self.originalWidth,
              (self.originalWidth * np.tan(self.bottomLineAngle)) + self.originalHeight],
         ])

@@ -39,9 +39,3 @@ def onChange(k):
         cv2.putText(dst, '%d' % mini, (100, 100), cv2.FONT_ITALIC, 1.5, (255, 0, 0))
 
     cv2.imshow("dst", dst)
-
-
-def generateTrackbars():
-# cv2.createTrackbar('points', 'origin', 150, 300, onChange)
-# cv2.createTrackbar('mini', 'origin', 100, 1000, onChange)
-# cv2.createTrackbar('maxi', 'origin', 200, 1000, onChange)

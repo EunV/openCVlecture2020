@@ -66,15 +66,17 @@ class LineDetector:
             cv2.putText(dst, '%d' % self.__realCount,
                         ((x1 + x2 + 50) // 2, (y1 + y2 + 50) // 2),
                         cv2.FONT_ITALIC, 1.0, (0, 0, 255), 1)
-
+            #for debug
             print(
                 "(%02d) cotTheta(dx/dy) : %s , tanTheta(dy/dx) : %s , theta :  %s(x축 기준 :%s), 180도 중 %s | rho "
                 "%f "
                 % (self.__realCount, str(np.tan(np.pi - theta)), str(1 / np.tan(np.pi - theta)),
                    str(atan(1 / np.tan(np.pi - theta))),
                    str(theta),
-                   str(theta * 180 / np.pi), rho)
+                   str(theta * 180 / np.pi), 
+                   rho)
             )
+
             cv2.imshow('lines', dst)
             cv2.waitKey(0)
 
