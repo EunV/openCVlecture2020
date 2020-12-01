@@ -4,7 +4,6 @@ import numpy as np
 
 class TextImg:
     __textImage: np.ndarray
-    __sizes: tuple
     __img_height: int
     __img_width: int
 
@@ -25,7 +24,7 @@ class TextImg:
         print('edgeThetas in Function : ', edgeThetas)
         self.leftLineAngle, self.topLineAngle, self.rightLineAngle, self.bottomLineAngle = edgeThetas
 
-    def generate(self, text: str = '50mph', font=cv2.FONT_HERSHEY_SIMPLEX, scale=1, thickness=1,
+    def generate(self, text: str, font=cv2.FONT_HERSHEY_SIMPLEX, scale=1, thickness=1,
                  color=(255, 255, 255, 255)) -> np.ndarray:
         sizes = cv2.getTextSize(text, font, scale, thickness)
         width, height = sizes[0]
@@ -56,85 +55,18 @@ class TextImg:
         return self.perspectiveProject()
 
     def perspectiveProject(self):
-
-        #  for road 222
-        #  가로선에 대한 정보는 없는 이미지임
-        # dstPoint = np.float32([
-        #     [self.originalHeight * np.tan(np.pi + (0.17453292)), 0],  # 좌상단
-        #     [0, self.originalHeight],  # 좌하단
-        #     [self.originalWidth - (self.originalHeight * np.tan(np.pi - 2.111848)), 0],  # 우상단
-        #     [self.originalWidth, self.originalHeight]  # 우하단
-        # ])
-
-        # for signAlone.jpg
-        # 네모칸이 왼쪽 위에서 오른쪽 아래로 하락하는 이미지지만, 오른쪽 가장자리가 특이한 형태( 전체적으로 사다리꼴 비스무리한 형태)
-        '''
-        dstPoint = np.float32([
-            # np.pi/2 + theta , # -np.pi + theta
-            [self.originalHeight * np.tan(np.pi / 2 + (-1.2217304865506033)),  # 3번 Edge
-             0],  # 좌상단 #
-
-            # 여기를 기준점으로 잡아 고정
-            [0,
-             self.originalHeight],  # 좌하단.
-
-            # np.pi/2+ theta(단 theta 값은 음수. x축 기준 각도는 예각)
-            [self.originalWidth + self.originalHeight * np.tan(np.pi / 2 + (1.239183827242579 - np.pi)),  # 7번 Edge
-             self.originalWidth * np.tan(np.pi/2-1.239183827242579)],  # 우상단 7번 edge
-
-            # np.tan(theta) 단, 예각일 때
-            [self.originalWidth,
-             self.originalHeight + (self.originalWidth * np.tan(0.2967060049388071))]  # 우하단 1번 Edge
-        ])
-        '''
-
-        # for Cargo Image
-        # 네모칸이 왼쪽 아래에서 오른쪽 위로 상승
-        # edges (top,bottom,left,right) = (0,1,6,6)
-        # theta 가 음수 일대 np.tan(theta)
-        # dstPoint = np.float32([
-        #     [0 + self.originalHeight * np.tan(np.pi / 2 + (-1.5009831572559218)),  # 여기는 쓸게 없어서 갖다 부인거니 의미는 없음
-        #      0],
-        #
-        #     [0, self.originalHeight],  # 좌하단. 여기를 기준으로 해보기
-        #
-        #     [self.originalWidth + self.originalHeight * np.tan(np.pi / 2 + (-1.5009831572559218)),
-        #      (self.originalWidth * np.tan(-0.2268927852299551))],  # 우상단
-        #
-        #     [self.originalWidth,
-        #      (self.originalWidth * np.tan(-0.26179941097763576)) + self.originalHeight]  # 우하단
-        # ])
-
-        '''
-            for 내리막길 주의 표지판 사진(ROAD WarningSign.jpg) Edge: 6 7 10 12 <--이게 최종임
-            네모칸이 왼쪽 아래로 하락
-            dstPoint = np.float32([
-                # np.pi/2 + theta , # -np.pi + theta
-                [self.originalHeight * np.tan(np.pi / 2 + (-1.5533430344101529)),
-                 0 - self.originalWidth * np.tan(np.pi + 0.017453237375940907)],  # 좌상단 #-41도임
-    
-                # 여기를 기준점으로 잡아 고정
-                [0, self.originalHeight],  # 좌하단.
-    
-                # np.pi/2+ theta(단 theta 값은 음수. x축 기준 각도는 예각)
-                [self.originalWidth + self.originalHeight * np.tan(np.pi / 2 + (-1.5184364477780203)),
-                 0],  # 우상단
-    
-                # np.tan(theta) 단, 예각일 때
-                [self.originalWidth,
-                 (self.originalWidth * np.tan(0.0698131759974619)) + self.originalHeight]  # 우하단
-            ])
-        '''
-
         # 모든 이미지에 대해 일반화한 버전
         dstPoint = np.float32([
             [0 + self.originalHeight * np.tan(np.pi / 2 + self.leftLineAngle),
              0],  # 좌상단
+
             [0, self.originalHeight],  # 좌하단. 기준점
+
             [self.originalWidth + self.originalHeight * np.tan(np.pi / 2 + self.rightLineAngle),
-             self.originalWidth * np.tan(self.topLineAngle)],
+             self.originalWidth * np.tan(self.topLineAngle)],  # 우상단
+
             [self.originalWidth,
-             (self.originalWidth * np.tan(self.bottomLineAngle)) + self.originalHeight],
+             (self.originalWidth * np.tan(self.bottomLineAngle)) + self.originalHeight],  # 우하단
         ])
 
         # 이동할 영역이 이미지 밖을 벗어나는지 확인

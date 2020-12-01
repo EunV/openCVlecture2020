@@ -39,9 +39,10 @@ class ImageMerger:
                 exit(0)
 
     def onXYchange(self, k) -> None:
+        # 원본 손상 방지
         self.__previewImage = self.__originalImg.copy()
-
         txtImg = self.__txtImg.copy()
+
         x = cv2.getTrackbarPos('X', self.__previewWinName)
         y = cv2.getTrackbarPos('Y', self.__previewWinName)
 

@@ -1,7 +1,48 @@
 @startuml
-Class01 <|-- Class02
-Class03 *-- Class04
-Class05 o-- Class06
-Class07 .. Class08
-Class09 -- Class10
+
+class TextImageMaker {
+ - -textImage : np.ndarray
+ - -leftLineAngle : float
+ - -topLineAngle : float
+ - -rightLineAngle : float
+ - -bottomLineAngle : float
+
+ + +setThetas(edgeThetas:list) : None
+ + +generate(text:str,font:int,scale:float,thickness:float) : np.ndarray
+ - -perspectiveProject() : np.ndarray
+ - -getExpandLength(minimums:list , maximums:list) : list
+ - -moveLittle(expandInfo:list) : list
+}
+
+class LineDetector{
+ - -edgeCount : int
+ - -__resetVariables() : None
+ + +makeLines(srcImg:np.ndarray,cannyLower:int,cannyUpper,points:int) : tuple
+ - -getInersections(theta1:float,theta2:float,rho1:float,rho2:float,img:np.ndarray) : None
+}
+
+class TiltShiftMaker{
+    + +__init__(image:np.ndarray) : None
+    - -__generateTrackbars() : None
+    + +onChange() : None
+    - -__generateTrackbars2() : None
+    + +onChange2() : None
+    + +makeTiltShift(original:np.ndarray) : None
+}
+
+class ImageMerger{
+    - -__generateTrackbars(bgImgSize:tuple, txtImgSize:tuple) : None
+    + +mergeImg(originalImg:ndarray, bg:np.ndarray,txtImg:np.ndarray) : None
+    + +onXYchange(k) : None
+    - -__saveImg(img:np.ndarray) : None
+}
+
+legend
+|= field |= method |=  |
+|  -     |   -     | private |
+|  #     |   #     | protected |
+|  ~     |   ~     | package private |
+|  +     |   +     | public |
+endlegend
+
 @enduml
